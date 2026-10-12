@@ -41,7 +41,6 @@ def create_arm_joints(locators, side=None, joint_type='bind'):
             cmds.warning('Side not specified for joint: {}'.format(jnt_name))            
 
     # Create an arm joint group, parent the shoulder jnt under it
-    clav_jnt
     shld_jnt = f'{side}_SHLD_{joint_type}_Jnt'
 
     # Check to see if the principal arm joint group exists before creating it
@@ -57,3 +56,26 @@ def create_arm_joints(locators, side=None, joint_type='bind'):
     # Set up hiearchy
     cmds.parent(shld_jnt, joint_type_grp)
     cmds.parent(joint_type_grp, arm_jnt_grp)
+
+
+def orient_arm_joints(side, joint_type):
+    '''
+    Orient the arm joints with local X pointing down the bone.
+
+    Args:
+        side (str): The side of the arm ('L' or 'R').
+        joint_type (str): The type of joint ('bind', 'fk', 'ik').
+    '''
+
+    root_joint = '{}_SHLD_{}_Jnt'.format(side, joint_type)
+    print(root_joint)
+
+    if cmds.objExists(root_joint):
+        cmds.joint(
+            root_joint,
+            edit=True,
+            orientJoint='xyz',
+            secondaryAxisOrient='yup',
+            children=True,
+            zeroScaleOrient=True
+        )
