@@ -198,11 +198,7 @@ def create_null_node(name, position='suffix'):
 
 	if not sel:
 		cmds.warning('Nothing is selected. Creating null node at origin.')
-		null = cmds.group(
-			name=name,
-			empty=True,
-			world=True
-		)
+		null = cmds.group(name=name, empty=True, world=True)
 
 		return [null]
 
@@ -211,12 +207,7 @@ def create_null_node(name, position='suffix'):
 	for node in sel:
 
 		# Store the selected node's world-space transform.
-		matrix = cmds.xform(
-			node,
-			query=True,
-			worldSpace=True,
-			matrix=True
-		)
+		matrix = cmds.xform(node, query=True, worldSpace=True, matrix=True)
 
 		# Store the node's current parent
 		parent = cmds.listRelatives(node, parent=True)
@@ -228,24 +219,17 @@ def create_null_node(name, position='suffix'):
 			null_name = f'{node}_{name}'
 
 		# Create the null at the origin.
-		null = cmds.group(
-			name=null_name,
+		null = cmds.group(name=null_name,
 			empty=True,
 			world=True
 		)
 
 		# Match the selected node's world-space transform.
-		cmds.xform(
-			null,
-			worldSpace=True,
-			matrix=matrix
-		)
+		cmds.xform(null, worldSpace=True, matrix=matrix)
 
 		# Parent the null under the selected node's parent (if it exists)
 		if parent:
 			cmds.parent(null, parent[0])
-		else:
-			cmds.parent(null, world=True)
 
 		# Parent the selected node under the new null.
 		cmds.parent(node, null)
