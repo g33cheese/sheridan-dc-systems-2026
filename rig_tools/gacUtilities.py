@@ -205,7 +205,6 @@ def create_null_node(name, position='suffix'):
 	nulls = []
 
 	for node in sel:
-
 		# Store the selected node's world-space transform.
 		matrix = cmds.xform(node, query=True, worldSpace=True, matrix=True)
 
@@ -219,10 +218,7 @@ def create_null_node(name, position='suffix'):
 			null_name = f'{node}_{name}'
 
 		# Create the null at the origin.
-		null = cmds.group(name=null_name,
-			empty=True,
-			world=True
-		)
+		null = cmds.group(name=null_name, empty=True, world=True)
 
 		# Match the selected node's world-space transform.
 		cmds.xform(null, worldSpace=True, matrix=matrix)
