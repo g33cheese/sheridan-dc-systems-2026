@@ -19,12 +19,25 @@ importlib.reload(create_arm_joints)
 importlib.reload(create_arm_ik) 
 importlib.reload(arm_pivot_data) 
 
-# Arm Creation
+#---------- Arm Creation ----------#
+
+# Create pivots locators
 locators = create_arm_pivots.create_arm_pivots('L')
+
+# Save/Load pivot location data
 #arm_pivot_data.save_arm_pivots(['L_SHLD_Loc', 'L_elbow_Loc', 'L_wrist_Loc', 'L_elbow_mid_Loc', 'L_elbow_pole_Loc'])
 arm_pivot_data.load_arm_pivots(['L_SHLD_Loc', 'L_elbow_Loc', 'L_wrist_Loc', 'L_elbow_mid_Loc', 'L_elbow_pole_Loc'])
+
+# Create arm joints
 create_arm_joints.create_arm_joints(locators, 'L', 'bind')
 create_arm_joints.create_arm_joints(locators, 'L', 'fk')
 create_arm_joints.create_arm_joints(locators, 'L', 'ik')
+
+# Orient the arm joint chains
+create_arm_joints.orient_arm_joints('L', 'bind')
+create_arm_joints.orient_arm_joints('L', 'fk')
+create_arm_joints.orient_arm_joints('L', 'ik')
+
+# Create arm ik setup
 create_arm_ik.create_arm_ik('L')
 
