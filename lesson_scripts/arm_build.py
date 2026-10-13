@@ -17,7 +17,7 @@ importlib.reload(gacUtilities)
 importlib.reload(create_arm_pivots)
 importlib.reload(create_arm_joints)
 importlib.reload(create_arm_ik) 
-importlib.reload(arm_pivot_data) 
+importlib.reload(arm_pivot_data)
 
 #---------- Arm Creation ----------#
 
@@ -40,4 +40,13 @@ create_arm_joints.orient_arm_joints('L', 'ik')
 
 # Create arm ik setup
 create_arm_ik.create_arm_ik('L')
+
+
+#---------- Right-side ----------#
+
+# Mirror the joint chains to the right side
+create_arm_joints.mirror_arm_joints()
+
+# Create R arm ik setup
+create_arm_ik.create_arm_ik('R')
 
