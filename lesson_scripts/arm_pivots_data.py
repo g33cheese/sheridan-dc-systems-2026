@@ -1,5 +1,5 @@
 '''
-This script provides functions to save and load the world-space positions and rotations of arm pivot locators in Maya.
+This script provides functions to save and load the world-space positions of arm pivot locators in Maya.
 '''
 
 import os
@@ -10,7 +10,7 @@ filepath = r'C:\Users\garve\OneDrive\Documents\maya\scripts'
 
 def save_arm_pivots(pivots, filepath=filepath):
     '''
-    Save the current world-space positions and rotations of the specified arm pivots.
+    Save the current world-space positions of the specified arm pivots.
     
     Args:
         pivots (list): List of arm pivot locator names to save.
@@ -20,7 +20,7 @@ def save_arm_pivots(pivots, filepath=filepath):
     # Get the JSON file path
     json_path = f'{filepath}\\arm_pivots.json'
 
-    # Get the current pivot positions and rotations
+    # Get the current pivot positions
     pivot_data = {}
 
     for pivot in pivots:
@@ -31,12 +31,6 @@ def save_arm_pivots(pivots, filepath=filepath):
                     query=True,
                     worldSpace=True,
                     translation=True
-                ),
-                'rotation': cmds.xform(
-                    pivot,
-                    query=True,
-                    worldSpace=True,
-                    rotation=True
                 )
             }
         else:
@@ -51,7 +45,7 @@ def save_arm_pivots(pivots, filepath=filepath):
 
 def load_arm_pivots(pivots, filepath=filepath):
     '''
-    Load saved world-space positions and rotations and apply them to the specified arm pivots.
+    Load saved world-space positions and apply them to the specified arm pivots.
 
     Args:
         pivots (list): List of arm pivot locator names to apply the saved data to.
@@ -70,19 +64,13 @@ def load_arm_pivots(pivots, filepath=filepath):
     with open(json_path, 'r') as json_file:
         pivot_data = json.load(json_file)
 
-    # Apply the saved positions and rotations to the specified pivots
+    # Apply the saved positions to the specified pivots
     for pivot in pivots:
         if pivot in pivot_data and cmds.objExists(pivot):
             cmds.xform(
                 pivot,
                 worldSpace=True,
                 translation=pivot_data[pivot]['translation']
-            )
-
-            cmds.xform(
-                pivot,
-                worldSpace=True,
-                rotation=pivot_data[pivot]['rotation']
             )
         elif pivot not in pivot_data:
             cmds.warning('No saved data found for: {}'.format(pivot))
