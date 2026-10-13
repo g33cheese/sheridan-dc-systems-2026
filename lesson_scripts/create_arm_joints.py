@@ -1,5 +1,6 @@
 import maya.cmds as cmds
 
+
 def create_arm_joints(locators, side=None, joint_type='bind'):
     '''
     Function creates joints based on arm pivot locator's position
@@ -9,15 +10,27 @@ def create_arm_joints(locators, side=None, joint_type='bind'):
     cmds.select(clear=True)
 
     # Create joints for all locators except elbow_mid and elbow_pole.
-    excluded_locs = {f'{side}_elbow_mid_Loc', f'{side}_elbow_pole_Loc'}
+    excluded_pivots = {'elbow_mid', 'elbow_pole'}
     for loc in locators:
-        if loc in excluded_locs:
+        source_loc = loc
+        pivot_name = loc.replace('_Loc', '')
+        source_side = None
+        if pivot_name.startswith('L_') or pivot_name.startswith('R_'):
+            source_side = pivot_name[0]
+            pivot_name = pivot_name[2:]
+
+        if pivot_name in excluded_pivots:
             continue
 
+        # If requested side differs, prefer the matching side locator if it exists.
+        if side and source_side and source_side != side:
+            side_loc = f'{side}_{pivot_name}_Loc'
+            if cmds.objExists(side_loc):
+                source_loc = side_loc
+
         # Store pivot location data
-        pos = cmds.xform(loc, query=True, worldSpace=True, translation=True)
+        pos = cmds.xform(source_loc, query=True, worldSpace=True, translation=True)
         # Create joints
-        pivot_name = loc.replace(f'{side}_', '').replace('_Loc', '')
         jnt_name = f'{side}_{pivot_name}_{joint_type}_Jnt'
         cmds.joint(name=jnt_name, position=pos)
 
@@ -58,24 +71,71 @@ def create_arm_joints(locators, side=None, joint_type='bind'):
     cmds.parent(joint_type_grp, arm_jnt_grp)
 
 
-def orient_arm_joints(side, joint_type):
+def mirror_arm_joints():
     '''
-    Orient the arm joints with local X pointing down the bone.
-
-    Args:
-        side (str): The side of the arm ('L' or 'R').
-        joint_type (str): The type of joint ('bind', 'fk', 'ik').
+    Mirror the left arm joint chains to the right side,
+    create joint groups, and set joint colours.
     '''
 
-    root_joint = '{}_SHLD_{}_Jnt'.format(side, joint_type)
-    print(root_joint)
+    # Create the right arm joint group if it doesn't exist
+    right_arm_grp = 'R_armJnt_Grp'
+    if not cmds.objExists(right_arm_grp):
+        cmds.group(name=right_arm_grp, empty=True)
 
-    if cmds.objExists(root_joint):
-        cmds.joint(
-            root_joint,
-            edit=True,
-            orientJoint='xyz',
-            secondaryAxisOrient='yup',
-            children=True,
-            zeroScaleOrient=True
+    # Mirror the bind joint chain
+    if cmds.objExists('L_SHLD_bind_Jnt'):
+        right_root = cmds.mirrorJoint(
+            'L_SHLD_bind_Jnt',
+            mirrorYZ=True,
+            mirrorBehavior=True,
+            searchReplace=('L_', 'R_')
+        )[0]
+
+        cmds.group(right_root, name='R_armBindJnt_Grp', parent=right_arm_grp)
+
+        joints = [right_root] + (
+            cmds.listRelatives(right_root, allDescendents=True, type='joint') or []
         )
+
+        for jnt_name in joints:
+            cmds.setAttr('{}.overrideEnabled'.format(jnt_name), 1)
+            cmds.setAttr('{}.overrideColor'.format(jnt_name), 13)
+
+    # Mirror the FK joint chain
+    if cmds.objExists('L_SHLD_fk_Jnt'):
+        right_root = cmds.mirrorJoint(
+            'L_SHLD_fk_Jnt',
+            mirrorYZ=True,
+            mirrorBehavior=True,
+            searchReplace=('L_', 'R_')
+        )[0]
+
+        cmds.group(right_root, name='R_armFkJnt_Grp', parent=right_arm_grp)
+
+        joints = [right_root] + (
+            cmds.listRelatives(right_root, allDescendents=True, type='joint') or []
+        )
+
+        for jnt_name in joints:
+            cmds.setAttr('{}.overrideEnabled'.format(jnt_name), 1)
+            cmds.setAttr('{}.overrideColor'.format(jnt_name), 12)
+
+    # Mirror the IK joint chain
+    if cmds.objExists('L_SHLD_ik_Jnt'):
+        right_root = cmds.mirrorJoint(
+            'L_SHLD_ik_Jnt',
+            mirrorYZ=True,
+            mirrorBehavior=True,
+            searchReplace=('L_', 'R_')
+        )[0]
+
+        cmds.group(right_root, name='R_armIkJnt_Grp', parent=right_arm_grp)
+
+        joints = [right_root] + (
+            cmds.listRelatives(right_root, allDescendents=True, type='joint') or []
+        )
+
+        for jnt_name in joints:
+            cmds.setAttr('{}.overrideEnabled'.format(jnt_name), 1)
+            cmds.setAttr('{}.overrideColor'.format(jnt_name), 4)
+
