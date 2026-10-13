@@ -1,6 +1,5 @@
 import maya.cmds as cmds
 
-
 def create_arm_joints(locators, side=None, joint_type='bind'):
     '''
     Function creates joints based on arm pivot locator's position
@@ -39,9 +38,9 @@ def create_arm_joints(locators, side=None, joint_type='bind'):
         if side == 'L': # Set colour to blue tone
             if joint_type == 'bind': # Set colour to blue
                 cmds.setAttr(f'{jnt_name}.overrideColor', 6)
-            if joint_type == 'fk': # Set colour to lightblue
+            if joint_type == 'fk': # Set colour to light blue
                 cmds.setAttr(f'{jnt_name}.overrideColor', 29)
-            if joint_type == 'ik': # Set colour to red
+            if joint_type == 'ik': # Set colour to dark blue
                 cmds.setAttr(f'{jnt_name}.overrideColor', 15)
         elif side == 'R': # Set colour to red tone                
             if joint_type == 'bind': # Set colour to red                    
@@ -51,7 +50,7 @@ def create_arm_joints(locators, side=None, joint_type='bind'):
             if joint_type == 'ik': # Set colour to dark red
                 cmds.setAttr(f'{jnt_name}.overrideColor', 4)
         elif not side:
-            cmds.warning('Side not specified for joint: {}'.format(jnt_name))            
+            cmds.warning('Side not specified for joint: {}'.format(jnt_name))
 
     # Create an arm joint group, parent the shoulder jnt under it
     shld_jnt = f'{side}_SHLD_{joint_type}_Jnt'
@@ -71,6 +70,31 @@ def create_arm_joints(locators, side=None, joint_type='bind'):
     cmds.parent(joint_type_grp, arm_jnt_grp)
 
 
+
+def orient_arm_joints(side, joint_type):
+    '''
+    Orient the arm joints with local X pointing down the bone.
+
+    Args:
+        side (str): The side of the arm ('L' or 'R').
+        joint_type (str): The type of joint ('bind', 'fk', 'ik').
+    '''
+
+    root_joint = '{}_SHLD_{}_Jnt'.format(side, joint_type)
+
+    if cmds.objExists(root_joint):
+        cmds.joint(
+            root_joint,
+            edit=True,
+            orientJoint='xzy',
+            secondaryAxisOrient='yup',
+            autoOrientSecondaryAxis=False,
+            children=True,
+            zeroScaleOrient=True
+        )
+
+    # R side: orientJoint='xyzNeg',
+        
 def mirror_arm_joints():
     '''
     Mirror the left arm joint chains to the right side,
