@@ -41,3 +41,49 @@ def create_arm_pivots(side=None):
     cmds.select(clear=True)
 
     return locators
+
+
+def mirror_arm_pivots():
+    '''
+    Create right arm pivots from the left arm pivot locations.
+    '''
+
+    # Define the left and right pivot names
+    left_pivots = [
+        'L_SHLD_Loc',
+        'L_elbow_Loc',
+        'L_wrist_Loc',
+        'L_elbow_mid_Loc',
+        'L_elbow_pole_Loc'
+    ]
+
+    right_locators = []
+
+    for left_pivot in left_pivots:
+        # Check if the left pivot exists
+        if not cmds.objExists(left_pivot):
+            cmds.warning('Pivot locator not found: {}'.format(left_pivot))
+            continue
+
+        # Get the left pivot world-space position
+        position = cmds.xform(left_pivot, query=True, worldSpace=True, translation=True)
+
+        # Mirror the X position
+        mirrored_position = [-position[0],  position[1],  position[2]]
+
+        # Create the right pivot name
+        right_pivot = left_pivot.replace('L_', 'R_', 1)
+
+        # Create the right pivot locator
+        if cmds.objExists(right_pivot):
+            cmds.warning('Right pivot already exists: {}'.format(right_pivot))
+            right_locators.append(right_pivot)
+            continue
+
+        right_pivot = cmds.spaceLocator(name=right_pivot)[0]
+
+        # Apply the mirrored position
+        cmds.xform(right_pivot, worldSpace=True, translation=mirrored_position)
+        right_locators.append(right_pivot)
+
+    return right_locators
