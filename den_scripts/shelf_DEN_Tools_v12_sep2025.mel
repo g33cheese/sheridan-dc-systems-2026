@@ -1,0 +1,1075 @@
+global proc shelf_DEN_Tools_v12_sep2025 () {
+    global string $gBuffStr;
+    global string $gBuffStr0;
+    global string $gBuffStr1;
+
+
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 1
+        -flexibleWidthValue 32
+        -enable 1
+        -width 34
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "\nPPath\n\n Adds an entry to the Python Path\n\n Defaults to the scripts folder of the current maya project\n\n change the path if you wish\n\n Click the button to add the entry,\n box will close\n" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "PPath" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "PPath" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 0
+        -marginHeight 1
+        -command "import sys; sys.dont_write_bytecode=True\nimport importlib\n\nimport den_UIwindows_v12 as denUI\nimportlib.reload(denUI)\nimport den_Utilities_v12 as denUt\nimportlib.reload(denUt)\n\n\ndenUI.PPathUI()\n\n\n" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 3
+        -flexibleWidthValue 32
+        -enable 1
+        -width 35
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "import sys\nimport maya.cmds as cmds\n\n# - if the window already exitst, get rid of it\nif (cmds.window( 'PythonProj_Window', exists=True )):\n    print( 'found existing UI, deleting' )\n    cmds.deleteUI( 'PythonProj_Window' )\n\n# - find out what the maya workspace is\nmyProjDir = cmds.workspace( q=True, rootDirectory=True )\n\n\n# - make the window object\nmyPythonProjWindow = cmds.window( 'PythonProj_Window' )\n\n# - make a single column object inside the window object\ncmds.columnLayout( adjustableColumn=True )\n\n\"\"\"By Ryan\"\"\"\n\n\"\"\"Make a function to call the file browser window\"\"\" \ndef ryan_OpenFolderBrowser(ignore):\n    folderSelected = cmds.fileDialog2( caption=\"Select the scripts folder\", dialogStyle=2, okc=\"select\", fm=3 )\n    \n    if folderSelected:\n        cmds.textField( projName, edit=True, text=folderSelected[0] )\n        print(\"Selected scripts file path: \" + folderSelected[0])\n    else:\n        print(\"No folder selected\")\n\n\"\"\"Make a button to open the browser window for the users\"\"\"     \ncmds.button( label=\"Browse Scripts Folder\", command = ryan_OpenFolderBrowser )\n\n\"\"\"Ryan Out\"\"\"\n\n# - make a two column layout inside the single column oject\nmyLayout = cmds.rowColumnLayout( numberOfColumns=2, columnAttach=(1,'right',10), columnWidth=((1,160),(2,360)) )\n\n\n# - make a label and a textfield in the two column object\ncmds.text( label='Project Scripts Folder --' )\nprojName = cmds.textField( text=myProjDir+'scripts/ShelfTools' )\n\n# - jump back up to the single column object\ncmds.setParent('..')\n\n\n#- build the commands that the buttons execute\n\n# - command to print out the paths in the python path\ndef printPythonPathList(ignore):\n    for pythonPath in sys.path:\n        print( 'path----', pythonPath )\n\n\n# - command to add my custom path to the python path\ndef myCommand(ignore):\n    doCmd = True\n    projString = cmds.textField( projName, query=True, text=True )\n    print( 'projString =', projString )\n    for pythonPath in sys.path:\n        print( pythonPath )\n        if pythonPath == projString:\n            print( 'WARNING', pythonPath, 'already exits, not adding' )\n            doCmd = False\n    if doCmd:\n        print( 'adding', projString, 'to the python path' )\n        sys.path.append( projString )\n\n\t\t\t\n\n# - make the button objects that execute the commands\ncmds.button( label='Add Projects Scripts folder specified above to the Python Path' , command=myCommand )\ncmds.button( label='Print Python Path List', command=printPythonPathList )\n\n\t\t\t\t\t\t\t\t   \n\n# - make the window object visible on screen\ncmds.showWindow( myPythonProjWindow )\n" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "RyanPP" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "RyanPP" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 0
+        -marginHeight 1
+        -command "import sys; sys.dont_write_bytecode=True\nimport importlib\n\nimport den_UIwindows_v12 as denUI\nimportlib.reload(denUI)\nimport den_Utilities_v12 as denUt\nimportlib.reload(denUt)\n\n\ndenUI.RyanPPUI()\n\n\n" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    separator
+        -enable 1
+        -width 34
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -style "shelf" 
+        -horizontal 0
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 1
+        -flexibleWidthValue 32
+        -enable 1
+        -width 34
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "\nSnap\n\n Snaps one object to another\n\n 1- Select the object you want to snap to\n 2- Add to selection the object you want to be snapped\n 3- Click the shelf button\n" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "Snap" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "Snap" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "parentConstraint.png" 
+        -image1 "parentConstraint.png" 
+        -style "iconOnly" 
+        -marginWidth 0
+        -marginHeight 1
+        -command "import sys; sys.dont_write_bytecode=True\nimport importlib\n\nimport den_Utilities_v12 as denUt\nimportlib.reload(denUt)\n\n\ndenUt.den_ObjSnap()    \n\n" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 1
+        -flexibleWidthValue 32
+        -enable 1
+        -width 34
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "\nAxis\n\n shows or hides the local axis of selected objects\n\n 1- Click the shelf button\n 2- Select one or more objects\n 3- click on the show button to show local axis,\n click on the hide button to hide local axis\n" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "Axis" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "Axis" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "locator.png" 
+        -image1 "locator.png" 
+        -style "iconOnly" 
+        -marginWidth 0
+        -marginHeight 1
+        -command "import sys; sys.dont_write_bytecode=True\nimport importlib\n\nimport den_UIwindows_v12 as denUI\nimportlib.reload(denUI)\nimport den_Utilities_v12 as denUt\nimportlib.reload(denUt)\n\n\ndenUI.AxisUI()\n\n\n" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 1
+        -flexibleWidthValue 32
+        -enable 1
+        -width 34
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "\nMany-1\n\n Copies/Combines shape nodes from selected objects\ninto last selected object.\n\n  Object transforms are ignored,\nshapes retain local space.\n\n 1- Select the objects that have shapes you want\n 2- Add to selection the object you want to combine the shapes into\n 3- Click the shelf button\n" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "Many-1" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "Many-1" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 0
+        -marginHeight 1
+        -command "import sys; sys.dont_write_bytecode=True\nimport importlib\n\nimport den_UIwindows_v12 as denUI\nimportlib.reload(denUI)\nimport den_Utilities_v12 as denUt\nimportlib.reload(denUt)\n\n\ndenUI.Many1UI()\n\n\n" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 1
+        -flexibleWidthValue 32
+        -enable 1
+        -width 34
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "\n1-Many\n\n Copies/Duplicates shape nodes from last selected object\nto all the other selected objects.\n\n  Object transforms are ignored,\nshapes retain local space.\n\n 1- Select the objects that you want to copy shapes into\n 2- Add to selection the object you want to get the shapes from\n 3- Click the shelf button\n" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "1-Many" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "1-Many" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 0
+        -marginHeight 1
+        -command "import sys; sys.dont_write_bytecode=True\nimport importlib\n\nimport den_Utilities_v12 as denUt\nimportlib.reload(denUt)\nimport den_Utilities_v12 as denUt\nimportlib.reload(denUt)\n\n\ndenUt.den_CopyShapesIntoManyNodes()\n\n\n" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 1
+        -flexibleWidthValue 32
+        -enable 1
+        -width 34
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "\nColor\n\n Sets override color on shape nodes of selected objects\n\n 1- Click shelf icon to open the color node GUI\n 2- Click the buttons to set colors on selected objects\n 3- Close the window when finished (or not)\n" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "Color" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "Color" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "hairPaintSpecular.png" 
+        -image1 "hairPaintSpecular.png" 
+        -style "iconOnly" 
+        -marginWidth 0
+        -marginHeight 1
+        -command "import sys; sys.dont_write_bytecode=True\nimport importlib\n\nimport den_UIwindows_v12 as denUI\nimportlib.reload(denUI)\nimport den_Utilities_v12 as denUt\nimportlib.reload(denUt)\n\n\ndenUI.ColorUI()\n\n\n" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 1
+        -flexibleWidthValue 32
+        -enable 1
+        -width 34
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "\nLock\n\n Locks or Unlocks transforms and visibility on objects\n\n 1- Click shelf icon to open the LockUnlock GUI\n 2- Click the buttons to Lock or Unlock\n 3- Close the window when finished (or not)\n" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "Lock" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "Lock" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "lockLength.png" 
+        -image1 "lockLength.png" 
+        -style "iconOnly" 
+        -marginWidth 0
+        -marginHeight 1
+        -command "import sys; sys.dont_write_bytecode=True\nimport importlib\n\nimport den_UIwindows_v12 as denUI\nimportlib.reload(denUI)\nimport den_Utilities_v12 as denUt\nimportlib.reload(denUt)\n\n\ndenUI.LockUI()\n\n\n" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 1
+        -flexibleWidthValue 32
+        -enable 1
+        -width 34
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "\nZero-N\n\n Adds a Zero Null above selected controllers\n\n 1- Select control object(s) you wish to add zero nulls to\n 2- Click the shelf button\n" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "Zero-N" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "Zero-N" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 0
+        -marginHeight 1
+        -command "import sys; sys.dont_write_bytecode=True\nimport importlib\n\nimport den_Utilities_v12 as denUt\nimportlib.reload(denUt)\nimport den_Utilities_v12 as denUt\nimportlib.reload(denUt)\n\n\ndenUt.den_AddZeroNull()    \n" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 1
+        -flexibleWidthValue 32
+        -enable 1
+        -width 34
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "\nMcp-N\n\n Adds a Mocap Null above selected objects\n\n 1- Select object(s) you wish to add mocap nulls to\n 2- Click the shelf button\n" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "Mcp-N" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "Mcp-N" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 0
+        -marginHeight 1
+        -command "import sys; sys.dont_write_bytecode=True\nimport importlib\n\nimport den_Utilities_v12 as denUt\nimportlib.reload(denUt)\nimport den_Utilities_v12 as denUt\nimportlib.reload(denUt)\n\n\ndenUt.den_AddMocapNull()    \n\n" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 1
+        -flexibleWidthValue 32
+        -enable 1
+        -width 34
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "\nAdd-IK\n\n Adds an IK handle with proper node names\n\n 1- Click shelf icon to open the add IK GUI\n 2- set the IK handle type (only ikSCsolver and ikRPsolver are supported)\n 3- set Make Up Object to 1 if you want it to create an up object for pole vector\n 4- set the position of the up object to match the translate of the second joint\n (if you want the chain to maintain its position once the IK handle is made)\n 5- select the first joint and last joint in the chain\n 6- click the 'Make IK Handle' button\n 7- Close the window when finished (or not)\n" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "Add-IK" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "Add-IK" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "kinHandle.png" 
+        -image1 "kinHandle.png" 
+        -style "iconOnly" 
+        -marginWidth 0
+        -marginHeight 1
+        -command "import sys; sys.dont_write_bytecode=True\nimport importlib\n\nimport den_UIwindows_v12 as denUI\nimportlib.reload(denUI)\nimport den_Utilities_v12 as denUt\nimportlib.reload(denUt)\n\n\ndenUI.AddIKUI()\n\n\n" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    separator
+        -enable 1
+        -width 34
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -style "shelf" 
+        -horizontal 0
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 1
+        -flexibleWidthValue 32
+        -enable 1
+        -width 34
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "Makes a generic  Ball Control" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "Ball" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "Ball" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 0
+        -marginHeight 1
+        -command "import sys; sys.dont_write_bytecode=True\nimport importlib\n\nimport den_UIwindows_v12 as denUI\nimportlib.reload(denUI)\nimport den_Utilities_v12 as denUt\nimportlib.reload(denUt)\n\n\ndenUI.BallUI()\n\n\n" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 1
+        -flexibleWidthValue 32
+        -enable 1
+        -width 34
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "Makes a generic  Pole Control" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "Pole" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "Pole" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 0
+        -marginHeight 1
+        -command "import sys; sys.dont_write_bytecode=True\nimport importlib\n\nimport den_UIwindows_v12 as denUI\nimportlib.reload(denUI)\nimport den_Utilities_v12 as denUt\nimportlib.reload(denUt)\n\n\ndenUI.PoleUI()\n\n\n" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 1
+        -flexibleWidthValue 32
+        -enable 1
+        -width 34
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "Makes a generic  Cube Control" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "Cube" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "Cube" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 0
+        -marginHeight 1
+        -command "import sys; sys.dont_write_bytecode=True\nimport importlib\n\nimport den_UIwindows_v12 as denUI\nimportlib.reload(denUI)\nimport den_Utilities_v12 as denUt\nimportlib.reload(denUt)\n\n\ndenUI.CubeUI()\n\n\n" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 1
+        -flexibleWidthValue 32
+        -enable 1
+        -width 34
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "Makes a generic  Spike Control" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "Spike" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "Spike" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 0
+        -marginHeight 1
+        -command "import sys; sys.dont_write_bytecode=True\nimport importlib\n\nimport den_UIwindows_v12 as denUI\nimportlib.reload(denUI)\nimport den_Utilities_v12 as denUt\nimportlib.reload(denUt)\n\n\ndenUI.SpikeUI()\n\n\n" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 1
+        -flexibleWidthValue 32
+        -enable 1
+        -width 34
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "Makes a generic  ArrowT Control" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "ArrowT" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "ArrowT" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 0
+        -marginHeight 1
+        -command "import sys; sys.dont_write_bytecode=True\nimport importlib\n\nimport den_UIwindows_v12 as denUI\nimportlib.reload(denUI)\nimport den_Utilities_v12 as denUt\nimportlib.reload(denUt)\n\n\ndenUI.ArrowTUI()\n\n\n" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 1
+        -flexibleWidthValue 32
+        -enable 1
+        -width 34
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "Makes a generic  ArrowR Control" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "ArrowR" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "ArrowR" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 0
+        -marginHeight 1
+        -command "import sys; sys.dont_write_bytecode=True\nimport importlib\n\nimport den_UIwindows_v12 as denUI\nimportlib.reload(denUI)\nimport den_Utilities_v12 as denUt\nimportlib.reload(denUt)\n\n\ndenUI.ArrowRUI()\n\n\n" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 1
+        -flexibleWidthValue 32
+        -enable 1
+        -width 34
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "Makes a generic  Gear Control" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "Gear" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "Gear" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 0
+        -marginHeight 1
+        -command "import sys; sys.dont_write_bytecode=True\nimport importlib\n\nimport den_UIwindows_v12 as denUI\nimportlib.reload(denUI)\nimport den_Utilities_v12 as denUt\nimportlib.reload(denUt)\n\n\ndenUI.GearUI()\n\n\n" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 1
+        -flexibleWidthValue 32
+        -enable 1
+        -width 34
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "Makes a generic  Label Control" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "Label" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "Label" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 0
+        -marginHeight 1
+        -command "import sys; sys.dont_write_bytecode=True\nimport importlib\n\nimport den_UIwindows_v12 as denUI\nimportlib.reload(denUI)\nimport den_Utilities_v12 as denUt\nimportlib.reload(denUt)\n\n\ndenUI.LabelUI()\n\n\n" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 3
+        -flexibleWidthValue 32
+        -enable 1
+        -width 35
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "Makes a generic Hand Control" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "Hand" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "Hand" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 0
+        -marginHeight 1
+        -command "import sys; sys.dont_write_bytecode=True\nimport importlib\n\nimport den_UIwindows_v12 as denUI\nimportlib.reload(denUI)\nimport den_Utilities_v12 as denUt\nimportlib.reload(denUt)\n\n\ndenUI.HandUI()\n\n\n" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 3
+        -flexibleWidthValue 32
+        -enable 1
+        -width 35
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "Makes a generic Foot Control" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "Foot" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "Foot" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 0
+        -marginHeight 1
+        -command "import sys; sys.dont_write_bytecode=True\nimport importlib\n\nimport den_UIwindows_v12 as denUI\nimportlib.reload(denUI)\nimport den_Utilities_v12 as denUt\nimportlib.reload(denUt)\n\n\ndenUI.FootUI()\n\n\n" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 3
+        -flexibleWidthValue 32
+        -enable 1
+        -width 35
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "Makes a generic  Paw Control" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "Paw" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "Paw" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 0
+        -marginHeight 1
+        -command "import sys; sys.dont_write_bytecode=True\nimport importlib\n\nimport den_UIwindows_v12 as denUI\nimportlib.reload(denUI)\nimport den_Utilities_v12 as denUt\nimportlib.reload(denUt)\n\n\ndenUI.PawUI()\n\n\n" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    separator
+        -enable 1
+        -width 34
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -style "shelf" 
+        -horizontal 0
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 1
+        -flexibleWidthValue 32
+        -enable 1
+        -width 34
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "\nParent Constrain many nodes to one master\n\nconstrains many nodes to one master all in one operation\n It is much faster than doing it one by one\n\n 1- Select object(s) you wish to constrain\n   (Select object that will be the master last)\n 2- Click the shelf button\n" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "MPCon" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "MPCon" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "parentConstraint.png" 
+        -image1 "parentConstraint.png" 
+        -style "iconOnly" 
+        -marginWidth 0
+        -marginHeight 1
+        -command "import sys; sys.dont_write_bytecode=True\nimport importlib\n\nimport den_Utilities_v12 as denUt\nimportlib.reload(denUt)\n\n\ndenUt.den_ParentMultiCon()\n\n\n" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 1
+        -flexibleWidthValue 32
+        -enable 1
+        -width 34
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "\nPrint Translation\n\nPrints a python command that can be used in a script to set the\nselected node's translate values to their current values.\n It is a way of storing the current values so they can be repeated in a script.\n\n 1- Select object(s) you wish to generate code lines for\n 2- Click the shelf button - code lines will appear in script editor\n" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "PrTrn" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "PrTrn" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 0
+        -marginHeight 1
+        -command "import sys; sys.dont_write_bytecode=True\nimport importlib\n\nimport den_Utilities_v12 as denUt\nimportlib.reload(denUt)\n\n\ndenUt.den_PrintTranslateCmd()\n\n\n" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 1
+        -flexibleWidthValue 32
+        -enable 1
+        -width 34
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "\nPrint Rotation\n\nPrints a python command that can be used in a script to set the\nselected node's rotate values to their current values.\n It is a way of storing the current values so they can be repeated in a script.\n\n 1- Select object(s) you wish to generate code lines for\n 2- Click the shelf button - code lines will appear in script editor\n" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "PrRot" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "PrRot" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 0
+        -marginHeight 1
+        -command "import sys; sys.dont_write_bytecode=True\nimport importlib\n\nimport den_Utilities_v12 as denUt\nimportlib.reload(denUt)\n\n\n\ndenUt.den_PrintRotateCmd()\n\n\n" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 1
+        -flexibleWidthValue 32
+        -enable 1
+        -width 34
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "\nPrint Scale\n\nPrints a python command that can be used in a script to set the\nselected node's scale values to their current values.\n It is a way of storing the current values so they can be repeated in a script.\n\n 1- Select object(s) you wish to generate code lines for\n 2- Click the shelf button - code lines will appear in script editor\n" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "PrScl" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "PrScl" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 0
+        -marginHeight 1
+        -command "import sys; sys.dont_write_bytecode=True\nimport importlib\n\nimport den_Utilities_v12 as denUt\nimportlib.reload(denUt)\n\n\n\ndenUt.den_PrintScaleCmd()\n\n\n" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 1
+        -flexibleWidthValue 32
+        -enable 1
+        -width 34
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "\nPrint Translate, Rotate and Scale\n\nPrints a python command that can be used in a script to set all the\nselected node's local transform values to their current values.\n It is a way of storing the current values so they can be repeated in a script.\n\n 1- Select object(s) you wish to generate code lines for\n 2- Click the shelf button - code lines will appear in script editor\n" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "PrTRN" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "PrTRN" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 0
+        -marginHeight 1
+        -command "import sys; sys.dont_write_bytecode=True\nimport importlib\n\nimport den_Utilities_v12 as denUt\nimportlib.reload(denUt)\n\n\n\ndenUt.den_PrintLocalTransformCmd()\n\n\n" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 1
+        -flexibleWidthValue 32
+        -enable 1
+        -width 34
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "\nPrint Face JH (Jaw Hinge) Constraint values\n\nPrints a python command that can be used in a script to set the\nselected JH constraint node's weight values to their current values.\n It is a way of storing the current values so they can be repeated in a script.\n\n 1- Select JH constraint object(s) you wish to generate code lines for\n 2- Click the shelf button - code lines will appear in script editor\n" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "PrJHC" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "PrJHC" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 0
+        -marginHeight 1
+        -command "import sys; sys.dont_write_bytecode=True\nimport importlib\n\nimport den_Utilities_v12 as denUt\nimportlib.reload(denUt)\n\n\n\ndenUt.den_PrintConCmd()\n\n" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    shelfButton
+        -enableCommandRepeat 1
+        -flexibleWidthType 3
+        -flexibleWidthValue 32
+        -enable 1
+        -width 35
+        -height 34
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -annotation "\nPrint CV Position\n\nPrints a python command that can be used in a script to capture the cv positions of a nurbs curve.\n It is a way of storing the cv position values so they can be repeated in a script.\n\n 1- Select object(s) you wish to generate code lines for\n 2- Click the shelf button - code lines will appear in script editor\n" 
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -align "center" 
+        -label "PrCV" 
+        -labelOffset 0
+        -rotation 0
+        -flipX 0
+        -flipY 0
+        -useAlpha 1
+        -font "plainLabelFont" 
+        -imageOverlayLabel "PrCV" 
+        -overlayLabelColor 0.8 0.8 0.8 
+        -overlayLabelBackColor 0 0 0 0.5 
+        -image "pythonFamily.png" 
+        -image1 "pythonFamily.png" 
+        -style "iconOnly" 
+        -marginWidth 0
+        -marginHeight 1
+        -command "import sys; sys.dont_write_bytecode=True\nimport importlib\n\nimport den_Utilities_v12 as denUt\nimportlib.reload(denUt)\n\n\n\ndenUt.den_PrintCVposCmd()\n\n\n" 
+        -sourceType "python" 
+        -commandRepeatable 1
+        -flat 1
+    ;
+    separator
+        -enable 1
+        -width 34
+        -height 35
+        -manage 1
+        -visible 1
+        -preventOverride 0
+        -enableBackground 0
+        -backgroundColor 0 0 0 
+        -highlightColor 0.321569 0.521569 0.65098 
+        -style "shelf" 
+        -horizontal 0
+    ;
+
+} 
