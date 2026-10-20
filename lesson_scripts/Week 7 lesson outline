@@ -77,3 +77,6 @@ cmds.setAttr("L_elbow_bind_Jnt.rotateOrder", 1)
     # 4 - yxz
     # 5 - zyx
 
+# Show spider-rig and goatman
+
+# 11. Show Bluey builder footage as example
