@@ -182,21 +182,25 @@ def create_locator(name, size):
 
 
 
-def create_null_node(name, position='suffix'):
+def create_null_node(name, selected_nodes=None,position='suffix'):
 	'''
 	Create a null node for each selected node.
 
 	Args:
-		name (str): Name to add as a prefix or suffix.
+		name (str): Name to add as a prefix or suffix. ie. 'Null' or 'Zero'.
+		selected_nodes (list or str, optional): Nodes to create nulls for. 
+			If None, uses the current selection.
 		position (str): Whether name is added as a 'prefix' or 'suffix'.
 
 	Returns:
 		list: List of created null nodes.
 	'''
+	if selected_nodes:
+		sel = [selected_nodes]
+	else:
+		sel = cmds.ls(selection=True)
 
-	sel = cmds.ls(selection=True)
-
-	if not sel:
+	if not sel and selected_nodes is None:
 		cmds.warning('Nothing is selected. Creating null node at origin.')
 		null = cmds.group(name=name, empty=True, world=True)
 
