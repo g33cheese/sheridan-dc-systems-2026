@@ -1,0 +1,79 @@
+'''
+WEEK 7 - Teaching materials
+
+'''
+
+# Bring a rig example to demo things with
+# ✔ Free spider-man rig
+# ✔ Tippett rig
+
+# 00. import *
+from gacUtilities import * # wildcard import. 
+# It loads all public objects (functions, classes, variables) from a specific module or package directly into your current local namespace.
+# wildcard imports are strongly discouraged in production code.
+# Namespace Pollution and Collisions: If you import everything from multiple modules, they might share functions with the same name. The last module imported will silently overwrite the previous ones, leading to hard-to-find bugs.
+#  It ruins code traceability. If a developer (or a code linter) reads value = calculate_meta(), they won't know which module calculate_meta originally came from if your file starts with three different wildcard imports.
+
+# 000. createArmJoints.orient_arm_joints side orientJoint if statement
+# Show updated code
+
+# 0. FK arm setup function
+# ✔ Ready
+
+# 1. Mirror Left arm FK arm setup to the Right
+
+
+# 2. Add path to Maya scripts directory at the top of the script
+import sys
+sys.path.append('M:/scripts')
+
+
+# 3. Diagnostic pause function for Maya commands
+import time
+
+def den_DiagPause( seconds=1.0 ):
+    print( '=========== pausing for ', seconds, ' seconds' )
+    cmds.refresh( f=True ) # diagnostic refresh
+    time.sleep(seconds) # diagnostic pause
+
+
+den_DiagPause(seconds=5)
+
+# 4. Match transform as a constraint alternative
+# Modify > Match Transformations > Match Translation (select target, then source)
+cmds.matchTransform(target, source, position=True)  # Translation
+cmds.matchTransform(target, source, rotation=True)  # Rotation
+cmds.matchTransform(target, source, scale=True)  # Scale
+
+# 5. IK Solvers - RP vs SC (Rotate Plane vs Single Chain)
+# Show the difference between Rotate Plane and Single Chain IK solvers in Maya
+
+# 6. Rename the End Effector
+# Rename the effector immediately so the Outliner doesn't become polluted with generic names. 
+cmds.rename('effector1', 'L_arm_effector')
+
+
+# 7. Show reverse node creation
+cmds.createNode('reverse', name='L_ikFkArm_Rev')
+    # or
+cmds.shadingNode('reverse', asUtility=True, name='L_ikFkArm_Rev')
+
+
+# 8. Wrap all build code in a function
+def build_all():
+    # Place all build code here
+    pass
+
+
+# 9. Search and replace tool
+# Modify > Search and Replace Names...
+
+# 10. Bonus: joint rotateOrder
+cmds.setAttr("L_elbow_bind_Jnt.rotateOrder", 1)
+    # 0 - xyz
+    # 1 - yzx
+    # 2 - zxy
+    # 3 - xzy
+    # 4 - yxz
+    # 5 - zyx
+
