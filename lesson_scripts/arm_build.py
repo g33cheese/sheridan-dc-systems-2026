@@ -24,7 +24,6 @@ importlib.reload(create_arm_fk)
 
 # Create pivots locators
 locators = create_arm_pivots.create_arm_pivots('L')
-right_locators = create_arm_pivots.mirror_arm_pivots()
 
 # Save/Load pivot location data
 #arm_pivot_data.save_arm_pivots(['L_SHLD_Loc', 'L_elbow_Loc', 'L_wrist_Loc', 'L_elbow_mid_Loc', 'L_elbow_pole_Loc'])
@@ -34,15 +33,10 @@ arm_pivot_data.load_arm_pivots(['L_SHLD_Loc', 'L_elbow_Loc', 'L_wrist_Loc', 'L_e
 # Left Side ----------------------#
 for joint_type in ['bind', 'fk', 'ik']:
   create_arm_joints.create_arm_joints(locators, 'L', joint_type) # Creation in a for loop
-
+# or 
 create_arm_joints.create_arm_joints(locators, 'L', 'bind') # Creation one joint type at a time
 create_arm_joints.create_arm_joints(locators, 'L', 'fk')
 create_arm_joints.create_arm_joints(locators, 'L', 'ik')
-
-# Right Side ----------------------#
-create_arm_joints.create_arm_joints(right_locators, 'R', 'bind')
-create_arm_joints.create_arm_joints(right_locators, 'R', 'fk')
-create_arm_joints.create_arm_joints(right_locators, 'R', 'ik')
 
 # Orient the arm joint chains
 # Left Side ----------------------#
@@ -50,28 +44,27 @@ create_arm_joints.orient_arm_joints('L', 'bind')
 create_arm_joints.orient_arm_joints('L', 'fk')
 create_arm_joints.orient_arm_joints('L', 'ik')
 
+# Create arm ik setup
+create_arm_ik.create_arm_ik('L')
+
+
+#---------- Right-side ----------#
+
+# Create the R arm pivots
+right_locators = create_arm_pivots.mirror_arm_pivots()
+
 # Right Side ----------------------#
+create_arm_joints.create_arm_joints(right_locators, 'R', 'bind')
+create_arm_joints.create_arm_joints(right_locators, 'R', 'fk')
+create_arm_joints.create_arm_joints(right_locators, 'R', 'ik')
+
+# Mirror the joint chains to the right side
+# create_arm_joints.mirror_arm_joints()
+
+# Orient joints
 create_arm_joints.orient_arm_joints('R', 'bind')
 create_arm_joints.orient_arm_joints('R', 'fk')
 create_arm_joints.orient_arm_joints('R', 'ik')
-
-# Create arm ik setup
-create_arm_ik.create_arm_ik('L')
-
-
-#---------- Right-side ----------#
-
-# Create arm ik setup
-create_arm_ik.create_arm_ik('L')
-cmds.rename('effector1', 'L_arm_effector')
-
-# Create arm fk setup
-create_arm_fk.create_arm_fk(side='L')
-
-#---------- Right-side ----------#
-
-# Mirror the joint chains to the right side
-create_arm_joints.mirror_arm_joints()
 
 # Create R arm ik setup
 create_arm_ik.create_arm_ik('R')
