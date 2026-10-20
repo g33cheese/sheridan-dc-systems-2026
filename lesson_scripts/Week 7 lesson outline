@@ -31,9 +31,9 @@ sys.path.append('M:/scripts')
 # 3. Diagnostic pause function for Maya commands
 import time
 
-def den_DiagPause( seconds=1.0 ):
+def den_DiagPause(seconds=1.0):
     print( '=========== pausing for ', seconds, ' seconds' )
-    cmds.refresh( f=True ) # diagnostic refresh
+    cmds.refresh(f=True) # diagnostic refresh
     time.sleep(seconds) # diagnostic pause
 
 
@@ -68,7 +68,14 @@ def build_all():
 # 9. Search and replace tool
 # Modify > Search and Replace Names...
 
-# 10. Bonus: joint rotateOrder
+
+# 10. FK arm build function
+
+
+# 11. Code IK/FK switch
+
+
+# 12. Bonus: joint rotateOrder
 cmds.setAttr("L_elbow_bind_Jnt.rotateOrder", 1)
     # 0 - xyz
     # 1 - yzx
@@ -77,6 +84,10 @@ cmds.setAttr("L_elbow_bind_Jnt.rotateOrder", 1)
     # 4 - yxz
     # 5 - zyx
 
+
 # Show spider-rig and goatman
 
-# 11. Show Bluey builder footage as example
+
+# 13. Show Bluey builder footage as example
+
+
