@@ -82,18 +82,20 @@ def orient_arm_joints(side, joint_type):
 
     root_joint = '{}_SHLD_{}_Jnt'.format(side, joint_type)
 
+    if side == 'L':
+        orientJoint = 'xzy'
+    elif side == 'R':
+        orientJoint = 'xzyNeg'
     if cmds.objExists(root_joint):
         cmds.joint(
             root_joint,
             edit=True,
-            orientJoint='xzy',
+            orientJoint=orientJoint,
             secondaryAxisOrient='yup',
             autoOrientSecondaryAxis=False,
             children=True,
             zeroScaleOrient=True
         )
-
-    # R side: orientJoint='xyzNeg',
         
 def mirror_arm_joints():
     '''
@@ -162,4 +164,3 @@ def mirror_arm_joints():
         for jnt_name in joints:
             cmds.setAttr('{}.overrideEnabled'.format(jnt_name), 1)
             cmds.setAttr('{}.overrideColor'.format(jnt_name), 4)
-
