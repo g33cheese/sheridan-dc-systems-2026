@@ -1,1 +1,96 @@
+'''
+WEEK 8 - Teaching materials
+
+Biped Body Rig - Staging & Blocking Rigs
+
+Have a copy of Roller Girl uploaded to work and demo from
+'''
+
+
+### ------------------------------------------ SECTION 1 ------------------------------------------ ###
+
+# ------------------------------ The Biped Workflow & Base Pivots ------------------------------- #
+
+# 00 - den scripts
+# Make sure students can locate Dennis' build scripts, and have the filepath added to their userSetup.py or is being appended to their filepath
+import sys
+sys.path.append('<Dennis den scripts filepath here>')
+
+# 1. Three-stage Rig Delivery system  - Discuss and show; Use Jumpsuit Girl. 
+# Find examples - Q:DC_Systems_2025-26\DEN_Projects\BIP_DEN\maya\assets\JumpSuitFirl2\JumpsuitGirl2_Geometry_v12a_032.ma
+
+# a. Staging/Previs Rig (box model)
+# b. Blocking Rig (sushi - parented/constrained)
+# c. Final Rig (skinned)
+
+# ------------------------------------- A. STAGING RIG - BOX MODEL ------------------------------------- #
+
+# -------------------------------- Use Jumpsuit Girl for Pivot Placement -------------------------------- #
+
+# 2. Create the Staging/Previs Rig (box model)
+# Make block model geo for Roller Girl - Use her for one pivot placement pass
+# create base, arm, leg, torso pivots and rigs
+import den_Utilities_v13 as denUt
+import den_BipedRigTools_v13 as denBR
+
+denBR.den_makeBasePiv(name='JumpsuitGirl')
+denBR.den_makeBaseRig(label='JumpsuitGirl')
+
+denBR.den_makeBipedTorsoPivs()
+denBR.den_makeBipedTorsoRig()
+
+denBR.den_makeBipedLegPivs()
+denBR.den_makeBipedLegRig()
+
+denBR.den_makeBipedLegPivs()
+denBR.den_makeBipedLegRig()
+
+# 3. Right side pivots and rigs
+
+# 4. Connect Box Model
+denUt.den_ConnectBoxGeo(Jnts=[L_LegBindJoints, R_LegBindJoints, L_ArmBindJoints, R_ArmBindJoints, TorsoBindJoints]) 
+
+# 5. Test Poses - create a ROM of complex poses
+
+
+### ------------------------------------------ SECTION 2 ------------------------------------------ ###
+
+# ----------------------------------- B. BLOCKING RIG - SUSHI MODEL ----------------------------------- #
+
+# 6. MakeHuman software - Students use MakeHuman if they lack biped geo
+# Make sure all students that need to create a biped geo have it installed on their workstations
+
+# -------------------------------- Use Rollergirl for Pivot Placement -------------------------------- #
+
+# 7. Base Pivot & COG - run denBR module: denBR.den_makebaserig() build initial root circles and COG box
+# Base Pivot and COG
+denBR.den_makeBasePiv(name='rollerGirl')
+denBR.den_makeBaseRig(label='rollerGirl')
+
+# ---------------------- Rigging Torso, Legs, Arms, Hands, and Saving Animation ------------------------ #
+
+# 8. Torso Pivots - make_biped_torso_pivs script from denBR
+denBR.den_makeBipedTorsoPivs()
+denBR.den_makeBipedTorsoRig()
+
+# 9. Arm Pivots - make_biped_arm_pivs script from denBR
+denBR.den_makeBipedArmPivs()
+denBR.den_makeBipedArmRig()
+
+# 10. Hand & Finger Pivots - make_biped_hand_pivs_2 script from denBR
+denBR.den_makeBipedHandPivs2()
+denBR.den_makeBipedHandRig()
+
+# 11. Leg & Foot Pivots
+# Hip, Knee Pole, Foot Rocker, Heel Pivot
+denBR.den_makeBipedLegPivs()
+denBR.den_makeBipedLegRig()
+
+# 12. Connecting Proxy Geo - Connectboxgeo and Connectproxygeo script
+# connects proxy/sushi geo with _Mesh suffix to corresponging joint with _Jnt suffix
+denUt.den_ConnectProxyGeo(Jnts=[])
+
+# 13. Right side
+
+# 14. Exporting & Importing ROM anim - show .atom
 
