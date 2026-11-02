@@ -6,6 +6,17 @@ Biped Body Rig - Staging & Blocking Rigs
 Have a copy of Roller Girl uploaded to work and demo from
 '''
 
+### --------------------------------------- SKL PT1 REVIEW --------------------------------------- ###
+
+# Carefully reading hand-in instructions and requirements
+# 1. Joint/Control Orientation
+# 2. Hide/Lock Control Attributes
+# 3. FK/IK Attribute match to setup state
+# 4. IK/FK control follows setup (wrist)
+# 5. Rename effector1
+# 6. Script plan - #comments, .py files for easy expansion of code
+
+# DC Faculty has asked students to refrain from working on other assignments during class time.
 
 ### ------------------------------------------ SECTION 1 ------------------------------------------ ###
 
@@ -13,6 +24,8 @@ Have a copy of Roller Girl uploaded to work and demo from
 
 # 00 - den scripts
 # Make sure students can locate Dennis' build scripts, and have the filepath added to their userSetup.py or is being appended to their filepath
+# Advise not to add version numbers in module names
+
 import sys
 sys.path.append('<Dennis den scripts filepath here>')
 
@@ -29,6 +42,9 @@ sys.path.append('<Dennis den scripts filepath here>')
 
 # 2. Create the Staging/Previs Rig (box model)
 # Make block model geo for Roller Girl - Use her for one pivot placement pass
+# Show cylinder creation and build out method
+# Show import Jumpsuit Girl import box model and reposition
+
 # create base, arm, leg, torso pivots and rigs
 import den_Utilities_v13 as denUt
 import den_BipedRigTools_v13 as denBR
@@ -93,4 +109,3 @@ denUt.den_ConnectProxyGeo(Jnts=[])
 # 13. Right side
 
 # 14. Exporting & Importing ROM anim - show .atom
-
