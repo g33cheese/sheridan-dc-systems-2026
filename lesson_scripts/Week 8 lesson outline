@@ -16,7 +16,10 @@ Have a copy of Roller Girl uploaded to work and demo from
 # 5. Rename effector1
 # 6. Script plan - #comments, .py files for easy expansion of code
 
-# DC Faculty has asked students to refrain from working on other assignments during class time.
+# DC Faculty has asked students to refrain from working on other assignments during class time
+
+# Module versioning
+# ngSkinTools
 
 ### ------------------------------------------ SECTION 1 ------------------------------------------ ###
 
@@ -55,16 +58,38 @@ denBR.den_makeBaseRig(label='JumpsuitGirl')
 denBR.den_makeBipedTorsoPivs()
 denBR.den_makeBipedTorsoRig()
 
-denBR.den_makeBipedLegPivs()
-denBR.den_makeBipedLegRig()
+denBR.den_makeBipedArmPivs()
+denBR.den_makeBipedArmRig()
 
 denBR.den_makeBipedLegPivs()
 denBR.den_makeBipedLegRig()
 
 # 3. Right side pivots and rigs
 
-# 4. Connect Box Model
+# 4A. Connect Box Model
 denUt.den_ConnectBoxGeo(Jnts=[L_LegBindJoints, R_LegBindJoints, L_ArmBindJoints, R_ArmBindJoints, TorsoBindJoints]) 
+
+# 4B. Clean Hiearchy
+# Parent Constraint for modules
+cmds.parentConstraint('Cog_Ctrl', 'Torso_SpaceIN', mo=True)
+for side in ['L', 'R']:
+	cmds.parentConstraint('Chest_Ctrl', f'{side}_Chest_SpaceIN', mo=True)
+	cmds.parentConstraint('Pelvis_Ctrl', f'{side}_PelvisSpace_IN', mo=True)
+	cmds.parentConstraint('AllSpace_OUT', f'{side}_AllSpace_IN', mo=True)
+
+# Clean hierarchy 
+pivot_grp = 'rig_pivot_Grp'
+cmds.group('RollerGirl_Piv_Grp', 'TorsoPiv_Grp', 'L_LegPiv_Grp', 'R_LegPiv_Grp', 'L_ArmPiv_Grp', 'R_ArmPiv_Grp', name=pivot_grp)
+cmds.setAttr(f'{pivot_grp}.v', 0)
+
+rig_grp = 'RollerGirl_Rig_Grp'
+cmds.parent('Torso_Grp', 'L_Leg_Grp', 'R_Leg_Grp', 'L_Arm_Grp', 'R_Arm_Grp', rig_grp)
+
+# Global Scale
+for rig_grp in ['Torso_SpaceIN', 'L_Leg_Grp', 'R_Leg_Grp', 'L_Arm_Grp', 'R_Arm_Grp']:
+	# for scale_attr in ['sx', 'sy', 'sz']:
+	cmds.scaleConstraint('All_Ctrl', rig_grp, mo=True)
+		#cmds.connectAttr('All_Ctrl.Global_Scale', f'{rig_grp}.{scale_attr}')
 
 # 5. Test Poses - create a ROM of complex poses
 
@@ -104,8 +129,14 @@ denBR.den_makeBipedLegRig()
 
 # 12. Connecting Proxy Geo - Connectboxgeo and Connectproxygeo script
 # connects proxy/sushi geo with _Mesh suffix to corresponging joint with _Jnt suffix
-denUt.den_ConnectProxyGeo(Jnts=[])
+denUt.den_connectBoxGeo(Jnts=['Chest_Jnt', 'Head_Jnt', 'Jaw_Jnt', 'L_Ankle_Jnt', 'L_Ball_Jnt', 'L_Clav_Jnt', 'L_Elbow_Jnt', 'L_Hip_Jnt', 'L_Knee_Jnt', 'L_Scap02_Jnt', 'L_Shld_Jnt', 'L_Wrist_Jnt', 'Neck01_Jnt', 'Pelvis_Jnt', 'R_Ankle_Jnt', 'R_Ball_Jnt', 'R_Clav_Jnt', 'R_Elbow_Jnt', 'R_Hip_Jnt', 'R_Knee_Jnt', 'R_Scap02_Jnt', 'R_Shld_Jnt', 'R_Wrist_Jnt', 'Spine01_Jnt', 'Spine02_Jnt'])
+denUt.den_connectProxyGeo
 
 # 13. Right side
+# Mirroring is handled by duplicating the left side pivots, renaming the 'L_' to 'R_' and then calling...
+denBR.den_makeBipedArmRig(side='R_')
+denBR.den_makeBipedLegRig(side='R_')
+
 
 # 14. Exporting & Importing ROM anim - show .atom
+# Class has Studio Library for animation import/export
