@@ -26,6 +26,8 @@ import den_BipedRigTools_v13 as denBr
 
 ## 00. Copy files to computer. Copy updated den_BipedRigTools_v13.py to the network. Inform students of the update.
 
+## 000. Talk to class about AI use
+
 # 1. Show completed Blocking Rig and sushi geo
 # 2. Walkthrough Blocking Rig creation code (makeBlockingRig.py) - Share code
 # 3. Have students cut their Blocking (Sushi) geo
