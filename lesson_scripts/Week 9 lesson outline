@@ -1,0 +1,414 @@
+'''
+WEEK 9 - Teaching materials
+
+Biped Weight Transfers & Deformation Helpers
+
+Finish building the Stage 2: Blocking Rig
+    - Finish rig setup
+    - Cut the sushi geo
+    - Connect proxy geo to the rig
+Transfer Stage 1: Staging Rig animation to the completed Blocking Rig
+
+Start Stage 3: Final Rig (skinned) - skin 
+    - Transfer skinning to the Final Rig's body geo
+'''
+
+from maya import cmds
+
+import den_Utilities_v13 as denUt
+import den_BipedRigTools_v13 as denBr
+
+### ------------------------------------------ SECTION 1 ------------------------------------------ ###
+
+# ----------------- Blocking Rig Setup, Sushi Geo, Proxy Connections & Twist Joints ----------------- #
+
+# --------------------------------------- BLOCKING (SUSHI) RIG--------------------------------------- #
+
+## 00. Copy files to computer. Copy updated den_BipedRigTools_v13.py to the network. Inform students of the update.
+
+# 1. Show completed Blocking Rig and sushi geo
+# 2. Walkthrough Blocking Rig creation code (makeBlockingRig.py) - Share code
+# 3. Have students cut their Blocking (Sushi) geo
+
+# 4. Twist Joints 
+den_makeTwists( side='L_', prefix='', name='Arm', radius=2.0, Joints=['Shld','Elbow','Wrist'], ctrlPos=(-10,0,-10), ctrlUpVec=(0,0,-1), displayLocalAxis=True, dpTime = 0.01 )
+denBr.den_makeBipedArmRig(twistType='twist')
+denBr.den_makeBipedLegRig(twistType='twist')
+denBr.den_makeTwists()
+ 
+# 5. Checking for Missing Meshes (cheat sheet code)
+# Step 1: Create a list of all bind joints using a wildcard
+cmds.select('*_Mesh')
+proxy_geo = cmds.ls(sl=True)
+print(proxy_geo)
+
+# Step 2: Generate a theoretical list of expected meshes using Python string replacement
+proxy_geos = [
+    'Head_Mesh',
+    'Jaw_Mesh',
+    'L_Eye_Mesh',
+    'R_Eye_Mesh',
+    'Neck01_Mesh',
+    'Chest_Mesh',
+    'Spine02_Mesh',
+    'Spine01_Mesh',
+    'Pelvis_Mesh',
+    'L_Clav_Mesh',
+    'L_Shld_Mesh',
+    'L_ShldTwist02_Mesh',
+    'L_ShldTwist03_Mesh',
+    'L_Elbow_Mesh',
+    'L_ElbowTwist02_Mesh',
+    'L_ElbowTwist03_Mesh',
+    'L_Thumb01_Mesh',
+    'L_Thumb02_Mesh',
+    'L_Thumb03_Mesh',
+    'L_Index00_Mesh',
+    'L_Index01_Mesh',
+    'L_Index02_Mesh',
+    'L_Index03_Mesh',
+    'L_Middle00_Mesh',
+    'L_Middlex01_Mesh',
+    'L_Middlex02_Mesh',
+    'L_Middlex03_Mesh',
+    'L_Ring00_Mesh',
+    'L_Ring01_Mesh',
+    'L_Ring02_Mesh',
+    'L_Ringx03_Mesh',
+    'L_Pinky00_Mesh',
+    'L_Pinky01_Mesh',
+    'L_Pinky02_Mesh',
+    'L_Pinky03_Mesh',
+    'L_Hip_Mesh',
+    'L_HipTwist02_Mesh',
+    'L_HipTwist03_Mesh',
+    'L_KneeTwist01_Mesh',
+    'L_KneeTwist02_Mesh',
+    'L_KneeTwist03_Mesh',
+    'L_Ankle_Mesh',
+    'L_Ball_Mesh',
+    'R_Clav_Mesh',
+    'R_Shld_Mesh',
+    'R_ShldTwist02_Mesh',
+    'R_ShldTwist03_Mesh',
+    'R_Elbow_Mesh',
+    'R_ElbowTwist02_Mesh',
+    'R_ElbowTwist03_Mesh',
+    'R_Thumb01_Mesh',
+    'R_Thumb02_Mesh',
+    'R_Thumb03_Mesh',
+    'R_Index00_Mesh',
+    'R_Index01_Mesh',
+    'R_Index02_Mesh',
+    'R_Index03_Mesh',
+    'R_Middle00_Mesh',
+    'R_Middlex01_Mesh',
+    'R_Middlex02_Mesh',
+    'R_Middlex03_Mesh',
+    'R_Ring00_Mesh',
+    'R_Ring01_Mesh',
+    'R_Ring02_Mesh',
+    'R_Ringx03_Mesh',
+    'R_Pinky00_Mesh',
+    'R_Pinky01_Mesh',
+    'R_Pinky02_Mesh',
+    'R_Pinky03_Mesh',
+    'R_Hip_Mesh',
+    'R_HipTwist02_Mesh',
+    'R_HipTwist03_Mesh',
+    'R_KneeTwist01_Mesh',
+    'R_KneeTwist02_Mesh',
+    'R_KneeTwist03_Mesh',
+    'R_Ankle_Mesh',
+    'R_Ball_Mesh'
+]
+
+for proxy_geo in proxy_geos:
+    if cmds.objExists(proxy_geo):
+        print(proxy_geo)
+    else: 
+        print(f"The geo: {proxy_geo} doesn't exist")
+
+# Step 3 (The enumerate loop): Loop through both lists simultaneously to verify existence. 
+# Using enumerate() generates an integer (i) that tracks the loop count, which can be used to index the parallel meshes list
+for i, proxy_geo in enumerate(proxy_geos):
+    if cmds.objExists(proxy_geo):
+        print(f"{i}: {proxy_geo} exists")
+    else:
+        print(f"{i}: The geo: {proxy_geo} doesn't exist")
+
+proxy_geo_jnts = [
+    'Head_Jnt',
+    'Jaw_Jnt',
+    'L_Eye_Jnt',
+    'R_Eye_Jnt',
+    'Neck01_Jnt',
+    'Chest_Jnt',
+    'Spine02_Jnt',
+    'Spine01_Jnt',
+    'Pelvis_Jnt',
+    'L_Clav_Jnt',
+    'L_ShldTwist01_Jnt',
+    'L_ShldTwist02_Jnt',
+    'L_ShldTwist03_Jnt',
+    'L_ElbowTwist01_Jnt',
+    'L_ElbowTwist02_Jnt',
+    'L_ElbowTwist03_Jnt',
+    'L_Thumb01_Jnt',
+    'L_Thumb02_Jnt',
+    'L_Thumb03_Jnt',
+    'L_Index00_Jnt',
+    'L_Index01_Jnt',
+    'L_Index02_Jnt',
+    'L_Index03_Jnt',
+    'L_Middle00_Jnt',
+    'L_Middle01_Jnt',
+    'L_Middle02_Jnt',
+    'L_Middle03_Jnt',
+    'L_Ring00_Jnt',
+    'L_Ring01_Jnt',
+    'L_Ring02_Jnt',
+    'L_Ring03_Jnt',
+    'L_Pinky00_Jnt',
+    'L_Pinky01_Jnt',
+    'L_Pinky02_Jnt',
+    'L_Pinky03_Jnt',
+    'L_HipTwist01_Jnt',
+    'L_HipTwist02_Jnt',
+    'L_HipTwist03_Jnt',
+    'L_KneeTwist01_Jnt',
+    'L_KneeTwist02_Jnt',
+    'L_KneeTwist03_Jnt',
+    'L_Ankle_Jnt',
+    'L_Ball_Jnt',
+    'R_Clav_Jnt',
+    'R_Shld_Jnt',
+    'R_ShldTwist02_Jnt',
+    'R_ShldTwist03_Jnt',
+    'R_Elbow_Jnt',
+    'R_ElbowTwist02_Jnt',
+    'R_ElbowTwist03_Jnt',
+    'R_Thumb01_Jnt',
+    'R_Thumb02_Jnt',
+    'R_Thumb03_Jnt',
+    'R_Index00_Jnt',
+    'R_Index01_Jnt',
+    'R_Index02_Jnt',
+    'R_Index03_Jnt',
+    'R_Middle00_Jnt',
+    'R_Middle01_Jnt',
+    'R_Middle02_Jnt',
+    'R_Middle03_Jnt',
+    'R_Ring00_Jnt',
+    'R_Ring01_Jnt',
+    'R_Ring02_Jnt',
+    'R_Ring03_Jnt',
+    'R_Pinky00_Jnt',
+    'R_Pinky01_Jnt',
+    'R_Pinky02_Jnt',
+    'R_Pinky03_Jnt',
+    'R_Hip_Jnt',
+    'R_HipTwist02_Jnt',
+    'R_HipTwist03_Jnt',
+    'R_KneeTwist01_Jnt',
+    'R_KneeTwist02_Jnt',
+    'R_KneeTwist03_Jnt',
+    'R_Ankle_Jnt',
+    'R_Ball_Jnt'
+]
+
+for jnt in proxy_geo_jnts:
+    if not cmds.objExists(jnt):
+        print(f"The joint: {jnt} doesn't exist")
+
+# 6. Connect the Proxy Geo to the Rig.
+# Note: If twist joints have been added to the arm and leg, Shld/Elbow/Hip Jnt = Jx
+denUt.den_connectProxyGeo(Jnts=[
+    'Head_Jnt',
+    'Jaw_Jnt',
+    'L_Eye_Jnt',
+    'R_Eye_Jnt',
+    'Neck01_Jnt',
+    'Chest_Jnt',
+    'Spine02_Jnt',
+    'Spine01_Jnt',
+    'Pelvis_Jnt',
+    'L_Clav_Jnt',
+    'L_Shld_Jnt',
+    'L_ShldTwist02_Jnt',
+    'L_ShldTwist03_Jnt',
+    'L_Elbow_Jnt',
+    'L_ElbowTwist02_Jnt',
+    'L_ElbowTwist03_Jnt',
+    'L_Thumb01_Jnt',
+    'L_Thumb02_Jnt',
+    'L_Thumb03_Jnt',
+    'L_Index00_Jnt',
+    'L_Index01_Jnt',
+    'L_Index02_Jnt',
+    'L_Index03_Jnt',
+    'L_Middle00_Jnt',
+    'L_Middle01_Jnt',
+    'L_Middle02_Jnt',
+    'L_Middle03_Jnt',
+    'L_Ring00_Jnt',
+    'L_Ring01_Jnt',
+    'L_Ring02_Jnt',
+    'L_Ring03_Jnt',
+    'L_Pinky00_Jnt',
+    'L_Pinky01_Jnt',
+    'L_Pinky02_Jnt',
+    'L_Pinky03_Jnt',
+    'L_HipTwist01_Jnt',
+    'L_HipTwist02_Jnt',
+    'L_HipTwist03_Jnt',
+    'L_KneeTwist01_Jnt',
+    'L_KneeTwist02_Jnt',
+    'L_KneeTwist03_Jnt',
+    'L_Ankle_Jnt',
+    'L_Ball_Jnt',
+    'R_Clav_Jnt',
+    'R_ShldTwist01_Jnt',
+    'R_ShldTwist02_Jnt',
+    'R_ShldTwist03_Jnt',
+    'R_ElbowTwist01_Jnt',
+    'R_ElbowTwist02_Jnt',
+    'R_ElbowTwist03_Jnt',
+    'R_Thumb01_Jnt',
+    'R_Thumb02_Jnt',
+    'R_Thumb03_Jnt',
+    'R_Index00_Jnt',
+    'R_Index01_Jnt',
+    'R_Index02_Jnt',
+    'R_Index03_Jnt',
+    'R_Middle00_Jnt',
+    'R_Middle01_Jnt',
+    'R_Middle02_Jnt',
+    'R_Middle03_Jnt',
+    'R_Ring00_Jnt',
+    'R_Ring01_Jnt',
+    'R_Ring02_Jnt',
+    'R_Ring03_Jnt',
+    'R_Pinky00_Jnt',
+    'R_Pinky01_Jnt',
+    'R_Pinky02_Jnt',
+    'R_Pinky03_Jnt',
+    'R_HipTwist01_Jnt',
+    'R_HipTwist02_Jnt',
+    'R_HipTwist03_Jnt',
+    'R_KneeTwist01_Jnt',
+    'R_KneeTwist02_Jnt',
+    'R_KneeTwist03_Jnt',
+    'R_Ankle_Jnt',
+    'R_Ball_Jnt'
+])
+
+# You'll receive a 'List index out of range' error if one of the joints in the list doesn't exist in the scene:
+# Error: IndexError: file C:\Users/garve/OneDrive/Documents/maya/scripts\den_Utilities_v13.py line 1936: list index out of range
+
+# To delete existing constraints before creating new ones
+cmds.delete('*_Mesh_*Constraint1')
+
+
+### ------------------------------------------ SECTION 2 ------------------------------------------ ###
+
+# --------------------------- Final Rig Temporary Binds & Weight Transfer --------------------------- #
+
+# -------------------------------------------- FINAL RIG -------------------------------------------- #
+
+# Have file ready with final rig and render geo ready to use
+
+# 7. Final Rig Creation
+    # a. Use Blocking Rig
+    # b. Import Render geo
+    # c. Create skinCluster
+    # d. Transfer weights from proxy geo to render geo:
+
+# 8. The Weight Transfer Concept (Pipeline Philosophy)
+    # a. Apply rigid 100% weights from the proxy pieces directly onto the Final Rig's render mesh
+
+# 9. The Transfer Workflow: 
+    # a. Temporarily Bind proxy geo
+for jnt in skin_to_jnt:
+    # skin proxy mesh to corresponding joint
+    if cmds.objExists(jnt):
+        mesh = jnt.replace('_Jnt', '_Mesh')
+        if cmds.objExists(mesh):
+            cmds.skinCluster(jnt, mesh, toSelectedBones=True)
+            # Rename skinCluster to follow convention   
+            skin_cluster = cmds.ls(cmds.listHistory(mesh), type='skinCluster')[0]
+            cmds.rename(skin_cluster, f'{mesh}_SCLS')
+
+    # b. Copy Weights (Closest point on surface, and closest joint)
+    # c. Unbind Proxies (for double transforms)
+
+# 10. Analyzing Deformations (with saved poses)
+    # a. Load .atom Animation on to Final Rig
+
+# ------------------------------ Deformation Helpers (Adding Rigs to Fix Skin) ------------------------------- #
+
+# 11. Angle Splitters
+# Used for knee caps, elbow caps, and butts to better retain volume and handle sharp bends
+denBr.den_makeAngleSplitter(name='L_butt', firstJnt='L_HipRest_Jx', secondJnt='L_HipTwist01_Jnt', radius=3.0)  # butt
+denBr.den_makeAngleSplitter(name='L_kneeCap', firstJnt='L_Knee_Jx', secondJnt='L_KneeTwist01_Jnt', radius=3.0)  # kneecap
+
+# 12. Half-Muscles (Piston Rigs)
+# Stretchy rigs used for areas where flesh would dive into the body - for example, the inner thigh intersecting the pelvis
+denBR.den_makeHalfMusclePivs(side='L_', prefix='Groin', name='Push')  # groin pivot
+denBR.den_makeHalfMuscleRig(side='L_', prefix='Groin', name='Push', radius=3.0)  # groin piston rig
+# A proxy mesh needs to be created manually for the Half-Muscle rig to build: L_GroinPush_Mesh
+# Constraints need to be set up manually for the Half-Muscle rig to function correctly
+cmds.parentConstraint('PelvisSpace_OUT', 'L_GroinPushRoot_SpaceIN', mo=True)
+cmds.parentConstraint('L_HipTwist02_Jnt', 'L_GroinPushTip_SpaceIN', mo=True)
+
+
+# ----------------------------------- BIP Part 1 - Assignment Guidelines ------------------------------------ #
+
+# 13. Review BIP Part 1 assignment guidelines - Due Monday, November 16th, 2026
+
+# BIP Part 1 - Stage Rig:
+# 1A. Box Model
+    # i. Low poly box model
+    # ii. Color wireframe on mesh
+    # iii. Name parts properly
+
+    # Submission: 
+        # i. Video file: Wireframe-on-shaded turntable playblast
+        # ii. Maya file: of box model
+
+# 1B. Staging Rig
+    # i. Include Rig Pivots in file
+    # ii. Staging Rig is built from code
+    # iii. Box geo is constrained to Staging Rig
+
+    # Submission:
+        # i. Video file: demonstrating execution of scripts to create Staging Rig
+        # ii. Maya file: of Staging Rig with constrained box geo
+        # iii. Script file: used to create Staging Rig
+
+# 1C. Test Poses on Staging Rig
+    # i. Animate a minimum of 3 test poses to Staging Rig. Default on Frame 1, hold for 24-20 frames each
+    # ii. This will be used on your Part 2C Blocking Rig assignment
+
+    # Submission:
+        # i. Video file: demonstrating test poses on Staging Rig
+        # ii. Maya file: of Staging Rig with test poses
+
+# Summary:
+# 3x video files
+# 3x Maya files
+# 1x script file
+
+
+# ------------------------------ PREVIEW ------------------------------ # 
+
+# BIP Part 2 - Blocking Rig - Due: November 30th, 2026:
+    # 2A. Cut/Sushi Model
+    # 2B. Blocking Rig
+    # 2C. Test Poses on Blocking Rig
+
+# BIP Part 3 - Final Rig - Due: December 14th, 2026
+    # 3A. Final Rig Setup
+    # 3B. Test Poses on Final Rig
+    # 3C. Submission Requirements
+
