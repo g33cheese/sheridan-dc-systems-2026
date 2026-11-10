@@ -283,6 +283,9 @@ denBr.den_makeHalfMuscleRig(side='L_', prefix='Groin', name='Push', radius=3.0) 
 cmds.parentConstraint('PelvisSpace_OUT', 'L_GroinPushRoot_SpaceIN', mo=True)
 cmds.parentConstraint('L_HipTwist02_Jnt', 'L_GroinPushTip_SpaceIN', mo=True)
 
+# If the rig modules you are attaching to do not natively have spec_out, 
+# you must use the custom den_AddSpaceOUTs function to safely generate attachment points for your half-muscle piston.
+denUt.den_AddSpaceOUTs(Jnt=[])
 
 # ----------------------------------- BIP Part 1 - Assignment Guidelines ------------------------------------ #
 
