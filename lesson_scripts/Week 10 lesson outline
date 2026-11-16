@@ -1,0 +1,159 @@
+'''
+WEEK 10 - Teaching materials
+
+Deformation Helpers & Multi-Limbed Rigging (Sluggy)
+
+Deformation Helpers covered in Week 9 - Section 2 already
+
+Start of section 1 fill some gaps in Dennis' tools
+Section 1A: Bits & bobs Den tools and build workflow
+Section 1B: Multi-Limbed Rigging (Sluggy)
+Section 2: NG Skin Tools demo on Roller Girl Stage 3 - final rig
+
+'''
+
+from maya import cmds
+
+import den_Utilities_v13 as denUt
+print(denUt.__file__)
+
+import den_BipedRigTools_v13 as denBR
+print(denBR.__file__)
+
+# Introducing NEW modules:
+import den_AutoRigTools_v13 as denAR
+print(denAR.__file__)
+
+import den_SluggyRigTools_v13 as denSR
+print(denSR.__file__)
+
+
+### ------------------------------------------ SECTION 1 ------------------------------------------ ###
+
+# ----------------- Bits & Bobs, Multi-Limbed Rigging Rigging (Sluggy) ----------------- #
+
+
+# --------------------------------------- Bits & Bobs --------------------------------------- #
+# This section will cover miscellaneous tools and utilities provided by Dennis for rigging setup.
+
+
+# A. Checking the module file path
+print(denSR.__file__)  # Shows the file
+# This shows the file path of the shorthand alias for the module
+# denSR is the shorthand alias for den_SluggyRigTools_v13
+
+# B. Set the vis settings for geometry in the Staging/Blocking/Final Rig(s)
+cmds.connectAttr('All_Ctrl.Show_Box_Geo', 'Box_Geo_Grp.v') 
+cmds.connectAttr('All_Ctrl.Show_Proxy_Geo', 'Proxy_Geo_Grp.v') 
+cmds.connectAttr('All_Ctrl.Show_Render_Geo', 'Render_Geo_Grp.v') 
+
+# C. How Dennis was storing/applying pivot transforms for his rig builds
+cmds.xform('Pelvis_Piv', t=(0.0, 100.0055425780766, 2.347674407578178), ro=(0,0,0), s=(1,1,1))
+cmds.xform('Spine01_Piv', t=(0.0, 107.79380752147921, 5.037080785845294), ro=(0,0,0), s=(1,1,1))
+cmds.xform('Spine02_Piv', t=(0.0, 115.76092762374438, 4.0546351276166686), ro=(0,0,0), s=(1,1,1))
+
+# From the selected pivot objects, query and print their translation, rotation, and scale values
+sel = cmds.ls(sl=True)
+print(sel)
+for sel in sel:
+    trans = cmds.xform(sel, query=True, t=True)
+    rot = cmds.xform(sel, query=True, ro=True)
+    sca = cmds.xform(sel, query=True, s=True)
+        
+print(f'Translation = {trans}')
+print(f'Rotation = {rot}')
+print(f'Scale = {sca}')
+
+# D. Find the size of the render geometry - Provide one of the size variables to a makePivs func, the pivots will be scaled accordingly to the geo provided
+bbox = denUt.den_GeoBbox()  # Based on geo selection
+print(bbox)
+sizeX = bbox[0]
+sizeY = bbox[1]
+sizeZ = bbox[2]
+
+denBR.den_makeBipedTorsoPivs()
+denBR.den_makeBipedTorsoPivs(size=sizeY)
+
+# E. Parent Constraints for Torso Space
+TorsoSpaceIN = TorsoSpace_INs[0]
+cmds.parentConstraint(CogSpaceOUT, TorsoSpaceIN, mo=True)
+
+# F. Safety Covers - Clean-up utility for rig components (locks/hide attrs, hides IK handles)
+denUt.den_AddSafetyCovers(rigGroup='Torso_Grp', attrs=True, lock=True)
+denUt.den_AddSafetyCovers(rigGroup='Torso_Grp')
+
+
+# --------------------------------------- Quadruped Spines, Tails & Fins (Sluggy) --------------------------------------- #
+
+# 1. The "Any Torso" command
+denAR.den_makeAnyTorsoPivs(prefix='', radius=1.0, spineCount=4, neckCount=4, dpTime=0.01, size=100)
+denAR.den_makeAnyTorsoRig(prefix='', radius=0.7, ctrlRadius=(4.0,5.0,3.0,0.3), displayLocalAxis=False, spineCount=4, spineSecondaryJoints=[], neckCount=4, neckSecondaryJoints=[], spineAxisOrient='yup', jawAxisOrient='yup', jawPos=(0,-6,0), dpTime=0.01)
+
+# Making a simpler torso setup for comparison with the biped torso rig
+denAR.den_makeAnyTorsoPivs(spineCount=2, neckCount=1)  # Makes the same torso as denBR.den_makeBipedTorsoRig setup
+denBR.den_makeBipedTorsoRig(prefix='', radius=2.0, ctrlRadius=(18.0,20.0,12.0,2.0), displayLocalAxis=False, dpTime=0.01)
+
+# 2. Secondary Controllers (List Arguments) - eg. joint #3
+denAR.den_makeAnyTorsoRig(spineSecondaryJoints=[])
+
+# 3. Dynamic Tail & Physics (make_tail) - Generates an 8-joint tail that mathematically tapers the size of the controls down the chain
+denSR.den_makeTailPivs(prefix='', name='Tail', jointCount=8, radius=1.0, dpTime=0.01, size=100)
+denSR.den_makeTailRig(prefix='', name='Tail', jointCount=8, radius=0.7, ctrlRadius=2.0, controlJoints=(1,5,8), secondaryAxisOrient='yup', dpTime=0.01 )  # IK/FK Tail Rig
+denSR.den_makeTailRigIK(prefix='', name='Tail', jointCount=8, radius=0.7, ctrlRadius=2.0, controlJoints=(1,5,8), secondaryAxisOrient='yup', dpTime=0.01)  # IK Only
+denSR.den_makeTailRigFK(prefix='', name='Tail', jointCount=8, radius=0.7, ctrlRadius=2.0, secondaryAxisOrient='yup', dpTime=0.01)  # FK Only
+
+# Nucleus dynamics: tool can attach a Maya Hair System (Nucleus) to genrate procedural jiggle
+denSR.den_addTailDynamics(prefix='', name='Tail', TailRigGrp='TailRig_Grp', TailSpaceIN='TailPelvisSpace_IN', TailHandles=[], TailBindJnts=[], nucleusScale=1.0, dpTime=0.01)
+denSR.den_addTailDynamics(prefix='', name='Tail', TailRigGrp='TailRig_Grp', TailSpaceIN='TailPelvisSpace_IN', TailHandles=['Tail01_JntIkh', 'Tail02_JntIkh', 'Tail03_JntIkh', 'Tail04_JntIkh', 'Tail05_JntIkh', 'Tail06_JntIkh', 'Tail07_JntIkh', 'Tail08_JntIkh'], TailBindJnts=['Tail01_Jnt', 'Tail02_Jnt', 'Tail03_Jnt', 'Tail04_Jnt', 'Tail05_Jnt', 'Tail06_Jnt', 'Tail07_Jnt', 'Tail08_Jnt'], nucleusScale=1.0, dpTime=0.01)
+# TailCrvDynShape - The dynamic shape node created for the tail's Nucleus dynamics, responsible for procedural jiggle effects
+
+# Critical Workflow Rule: You MUST add tail dynamics before applying the rig's "safety covers". 
+# Blending: The dynamics are a float value. Animators can blend between procedural bounce and manual keyframing
+# Sluggy model found here: Q:\DC_Systems_2026-27_DEN_Projects\CIM_DEN\maya\assets\Sluggy
+
+# 4. FK Appendages (make_fins) - Generates a straight, multi-joint FK chain
+denSR.den_makeFinPivs(side='L_', prefix='', name='FinA', jointCount=3, radius=1.0, dpTime=0.01, size=100)
+denSR.den_makeFinRigFK(side='L_', prefix='', name='FinA', jointCount=3, radius=1.0, secondaryAxisOrient='yup', dpTime=0.01)
+# Despite the name, this module is the universal tool for creating FK appendages, not limited to fins (ears, antennas, whiskers, eye stalks, dewclaws)
+# Pivot alignments: User must utilize the little green "up" locators during pivot placement and the secondary_axis_orient flag ('zup') to ensure intended bend direction
+
+
+
+### ------------------------------------------ SECTION 2 ------------------------------------------ ###
+
+# --------------------------- NG Skin Tools Demo on Final Rig --------------------------- #
+
+
+# Have file ready with final rig skin layers set up
+
+# Rig setup notes:
+# i. Don't have side 'L' or 'R' in your IK/FK switch attr names
+# ii. IK/FK Control vis not setup
+
+# 1. Layers
+# 2. Reel FX layer setup
+# 3. Nesting layers - Fingers
+# The positives of working in simpler layers with less influences 
+# 4. Masks 
+# 5. Mirroring
+# 6. Replace
+# 7. Add to existing
+# 8. Import, layers with closest points for different geometry
+# 9. Effects > Opacity
+
+
+
+# ----------------------------------- BIP Part 1 - Assignment Guidelines ------------------------------------ #
+
+# ------------------------------ PREVIEW ------------------------------ # 
+
+# BIP Part 2 - Blocking Rig - Due: November 30th, 2026:
+    # 2A. Cut/Sushi Model
+    # 2B. Blocking Rig
+    # 2C. Test Poses on Blocking Rig
+
+# BIP Part 3 - Final Rig - Due: December 14th, 2026
+    # 3A. Final Rig Setup
+    # 3B. Test Poses on Final Rig
+    # 3C. Submission Requirements
+
